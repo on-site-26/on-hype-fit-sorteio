@@ -27,39 +27,43 @@
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
+    background-color: var(--dark-bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Mudado de center para flex-start para jogar tudo para cima */
+    min-height: 100vh;
+    padding: 20px 10px;      /* Um espaçamento confortável no topo e nas laterais */
+            
         }
 
         .container {
-            width: 100%;
-            max-width: 650px;
-            background: var(--card-bg);
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-            text-align: center;
-            transition: all 0.3s ease;
+    width: 100%;
+    max-width: 650px;
+    background: var(--card-bg);
+    border: 1px solid #222;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    text-align: center;
+    transition: all 0.3s ease;
+
+    /* ESTAS DUAS LINHAS ABAIXO CORRIGEM O PROBLEMA DO COMPUTADOR */
+    display: flex;
+    flex-direction: column; 
         }
 
         @media (min-width: 480px) {
             .container { padding: 30px; }
         }
         
-        .logo-container {
+      .logo-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    margin: 0 auto 20px auto; /* Centraliza e empurra o título "HYPE DRINK" para baixo */
-    clear: both;             /* Impede que elementos flutuem ao lado dela */
-    float: none;             /* Garante que ela não vá para os lados */
+    margin: 10px auto 20px auto; /* Reduzido o espaço para subir o conteúdo */
+
 }
 
 .logo-img {
@@ -327,11 +331,6 @@
 </head>
 <body>
 
-    <!-- LOGO GLOBAL -->
-<div id="main-logo" class="logo-container hidden">
-    <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
-</div>
-
         <div id="view-login">
     <div class="logo-container">
         <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
@@ -350,6 +349,10 @@
         </div>
 
         <div id="view-home" class="hidden">
+
+    <div class="logo-container">
+        <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
+    </div>
             <div class="nav-buttons">
                 <button class="btn btn-purple" onclick="mudarAba('tab-gerar-sorteio')">GERAR UM SORTEIO</button>
                 <button class="btn btn-purple" onclick="mudarAba('tab-gerar-codigo')">GERAR CÓDIGO PARA CLIENTE</button>
@@ -604,13 +607,11 @@
         function mostrarTelaLogin() {
             document.getElementById('view-login').classList.remove('hidden');
             document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('main-logo').classList.add('hidden');
         }
 
         function mostrarPainelAdmin() {
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('view-home').classList.remove('hidden');
-            document.getElementById('main-logo').classList.remove('hidden');
             sincronizarComFirebase(() => {
                 atualizarSelects();
                 mostrarLinkPadrao();
