@@ -53,26 +53,26 @@
         }
         
         .logo-container {
-            display: flex;
-            justify-content: center; /* Centraliza horizontalmente */
-            align-items: center;     /* Centraliza verticalmente */
-            margin: 0 auto 25px auto; /* Garante a centralização do bloco na tela */
-            width: 100%;
-            text-align: center;      /* Força o alinhamento central caso o flexbox sofra interferência */
-}
-        .logo-img {
-            width: 100%;             /* Faz a imagem ser flexível */
-            max-width: 150px;        /* Tamanho ideal e proporcional para celulares pequenos */
-            height: auto;            /* Mantém a proporção perfeita (não deixa a imagem "achatada") */
-            object-fit: contain;
-            display: block;          /* Remove espaços fantasmas abaixo da imagem */
-            margin: 0 auto;          /* Centraliza a imagem dentro do container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 0 auto 20px auto; /* Centraliza e empurra o título "HYPE DRINK" para baixo */
+    clear: both;             /* Impede que elementos flutuem ao lado dela */
+    float: none;             /* Garante que ela não vá para os lados */
 }
 
-/* Quando a tela for maior que 480px (Tablets e Computadores) */
-        @media (min-width: 480px) {
-            .logo-img {
-                max-width: 220px;    /* Aumenta o limite máximo para telas maiores */
+.logo-img {
+    display: block;
+    width: 100%;
+    max-width: 160px;        /* Tamanho ideal para celular de acordo com a foto */
+    height: auto;            /* Mantém a proporção perfeita */
+    margin: 0 auto;          /* Força o alinhamento no centro */
+}
+
+@media (min-width: 480px) {
+    .logo-img {
+        max-width: 220px;    /* Tamanho para computadores */
     }
 }
 
@@ -458,9 +458,16 @@
             </div>
         </div>
 
-        <div id="view-cliente" class="hidden">
-            <h2 id="cliente-sorteio-nome" style="color: var(--purple); margin-bottom: 5px; font-size: 1.4rem;"></h2>
-            <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">Insira seus dados e o código recebido para liberar suas cotas</p>
+        <!-- 3. TELA DO CLIENTE -->
+   <div id="view-cliente" class="hidden">
+       
+       <!-- LOGO CENTRALIZADA NO TOPO (ADICIONE AQUI) -->
+       <div class="logo-container">
+           <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
+       </div>
+
+       <h2 id="cliente-sorteio-nome" style="color: var(--purple); margin-bottom: 5px; font-size: 1.4rem;"></h2>
+       <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">Insira seus dados e o código recebido para liberar suas cotas</p>
             
             <div id="cliente-form">
                 <div class="form-group">
@@ -862,7 +869,6 @@
         function abrirTelaCliente(idSorteio) {
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('main-logo').classList.remove('hidden');
             document.getElementById('view-cliente').classList.remove('hidden');
 
             sincronizarComFirebase(() => {
