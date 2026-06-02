@@ -51,24 +51,28 @@
         @media (min-width: 480px) {
             .container { padding: 30px; }
         }
-
+        
         .logo-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 25px;
+            justify-content: center; /* Centraliza horizontalmente */
+            align-items: center;     /* Centraliza verticalmente */
+            margin: 0 auto 25px auto; /* Garante a centralização do bloco na tela */
             width: 100%;
+            text-align: center;      /* Força o alinhamento central caso o flexbox sofra interferência */
+}
+        .logo-img {
+            width: 100%;             /* Faz a imagem ser flexível */
+            max-width: 150px;        /* Tamanho ideal e proporcional para celulares pequenos */
+            height: auto;            /* Mantém a proporção perfeita (não deixa a imagem "achatada") */
+            object-fit: contain;
+            display: block;          /* Remove espaços fantasmas abaixo da imagem */
+            margin: 0 auto;          /* Centraliza a imagem dentro do container */
 }
 
-.logo-img {
-    max-width: 180px; /* Altere esse valor para aumentar ou diminuir a logo */
-    height: auto;     /* Mantém a proporção da imagem sem distorcer */
-    object-fit: contain;
-}
-
-@media (min-width: 480px) {
-    .logo-img {
-        max-width: 220px; /* Tamanho ligeiramente maior para telas de computador */
+/* Quando a tela for maior que 480px (Tablets e Computadores) */
+        @media (min-width: 480px) {
+            .logo-img {
+                max-width: 220px;    /* Aumenta o limite máximo para telas maiores */
     }
 }
 
