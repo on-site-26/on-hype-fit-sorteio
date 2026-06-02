@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ON HYPE FIT - Sistema de Sorteios</title>
+    <style>
+        :root {
+            --dark-bg: #0a0a0a;       
+            --card-bg: #141414;       
+            --green: #2ecc71;         
+            --green-hover: #27ae60;
+            --purple: #9b59b6;        
+            --purple-hover: #8e44ad;
+            --red: #e74c3c;
+            --red-hover: #c0392b;
+            --text: #ffffff;          
+            --text-gray: #888888;     
+            --input-bg: #1f1f1f;      
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        @media (min-width: 480px) {
+            .container { padding: 30px; }
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text);
+            margin-bottom: 25px;
+        }
+        .logo span { color: var(--purple); }
+
+        @media (min-width: 480px) {
+            .logo { font-size: 2.2rem; }
+        }
+
+        .hidden { display: none !important; }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-gray);
+            font-size: 0.85rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: var(--input-bg);
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--purple);
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--green); 
+            color: #000000;           
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        @media (min-width: 480px) {
+            .btn { font-size: 1rem; }
+        }
+
+        .btn:hover { background: var(--green-hover); }
+        .btn:active { transform: scale(0.98); }
+
+        .btn-purple {
+            background: var(--purple);
+            color: white;
+        }
+        .btn-purple:hover { background: var(--purple-hover); }
+
+        .btn-red {
+            background: var(--red);
+            color: white;
+        }
+        .btn-red:hover { background: var(--red-hover); }
+
+        .btn-secondary { 
+            background: #222; 
+            color: #fff;
+            border: 1px solid #333;
+        }
+        .btn-secondary:hover { background: #333; }
+
+        .tab-content {
+            background: #181818;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #252525;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        @media (min-width: 480px) {
+            .tab-content { padding: 20px; }
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--purple); 
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .link-gerado {
+            background: #0d0d0d;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px dashed var(--purple); 
+            margin-top: 10px;
+            word-break: break-all;
+            user-select: all;
+            color: var(--green); 
+            font-size: 0.9rem;
+        }
+
+        .resultado-container {
+            margin-top: 20px;
+        }
+        
+        .resultado-titulo {
+            color: var(--purple);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .historico-lista {
+            margin-top: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .historico-item {
+            background: #0d0d0d;
+            border: 1px solid #222;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .historico-item p {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            color: #e0e0e0;
+        }
+
+        .historico-cotas-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .cota-badge {
+            background: rgba(155, 89, 182, 0.2);
+            border: 1px solid var(--purple);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .cota-badge-sorteada {
+            background: rgba(46, 204, 113, 0.15);
+            border: 1px solid var(--green);
+            color: var(--green);
+            font-size: 1.1rem;
+            padding: 4px 10px;
+        }
+
+        .instagram-box {
+            background: rgba(155, 89, 182, 0.1); 
+            border: 1px solid var(--purple);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            margin: 25px 0;
+            text-align: left;
+        }
+        .progress-bar-bg {
+            background: #222;
+            border-radius: 10px;
+            height: 16px;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 8px;
+            border: 1px solid #333;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, var(--green), #a3e4d7); 
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            transition: width 1.5s ease-in-out;
+        }
+
+        .ultimos-participantes {
+            margin-top: 25px;
+            background: #0d0d0d;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #222;
+            text-align: left;
+        }
+        .ultimos-participantes h4 {
+            color: var(--purple); 
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .ultimos-participantes ul { list-style: none; }
+        .ultimos-participantes li {
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 0.85rem;
+            color: #e0e0e0;
+        }
+        .ultimos-participantes li:last-child { border-bottom: none; }
+        .highlight-green { color: var(--green); font-weight: bold; }
+
+        .historico-lista::-webkit-scrollbar { width: 6px; }
+        .historico-lista::-webkit-scrollbar-track { background: #111; }
+        .historico-lista::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        
+        .confirmacao-box {
+            background: #0d0d0d;
+            border: 1px solid var(--red);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <div id="main-logo" class="logo hidden">ON <span>HYPE FIT</span></div>
+
+        <div id="view-login">
+            <div class="logo">ON <span>HYPE FIT</span></div>
+            <h3 style="margin-bottom: 20px; color: var(--text-gray); font-size: 1.1rem;">Painel Administrativo</h3>
+            <div class="form-group">
+                <label>Usuário</label>
+                <input type="text" id="login-user" value="admin">
+            </div>
+            <div class="form-group">
+                <label>Senha</label>
+                <input type="password" id="login-pass" value="1234">
+            </div>
+            <button class="btn" onclick="efetuarLogin()">Entrar</button>
+            <p style="font-size: 0.8rem; color: #444; margin-top: 5px;">Dica: Use admin e 1234 para testar</p>
+        </div>
+
+        <div id="view-home" class="hidden">
+            <div class="nav-buttons">
+                <button class="btn btn-purple" onclick="mudarAba('tab-gerar-sorteio')">GERAR UM SORTEIO</button>
+                <button class="btn btn-purple" onclick="mudarAba('tab-gerar-codigo')">GERAR CÓDIGO PARA CLIENTE</button>
+                <button class="btn btn-purple" onclick="mudarAba('tab-cotas-geradas')">COTAS JÁ GERADAS</button>
+                <button class="btn btn-purple" onclick="mudarAba('tab-sortear')">SORTEAR COTAS</button>
+                <button class="btn btn-secondary" onclick="logout()" style="margin-top: 15px;">Sair do Sistema</button>
+            </div>
+
+            <div id="tab-gerar-sorteio" class="tab-content hidden">
+                <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
+                <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Novo Sorteio</h3>
+                <div class="form-group">
+                    <label>Nome do Sorteio</label>
+                    <input type="text" id="sorteio-nome" placeholder="Ex: Sorteio Kit Fit">
+                </div>
+                <div class="form-group">
+                    <label>Quantidade de Cotas</label>
+                    <input type="number" id="sorteio-qtd" placeholder="Ex: 1000">
+                </div>
+                <div class="form-group">
+                    <label>Data Realização</label>
+                    <input type="date" id="sorteio-data">
+                </div>
+                <button class="btn" onclick="salvarSorteio()">Criar Sorteio</button>
+                
+                <button class="btn btn-red" onclick="abrirSubAbaExcluir()" style="margin-top: 15px;">❌ EXCLUIR SORTEIOS</button>
+            </div>
+
+            <div id="tab-excluir-sorteio" class="tab-content hidden">
+                <button class="back-btn" onclick="mudarAba('tab-gerar-sorteio')">← Voltar para Novo Sorteio</button>
+                <h3 style="color: var(--red); margin-bottom: 15px; font-size: 1.2rem;">Excluir um Sorteio</h3>
+                
+                <div id="corpo-selecao-excluir">
+                    <div class="form-group">
+                        <label>Selecione o sorteio que deseja remover permanentemente</label>
+                        <select id="select-sorteios-excluir"></select>
+                    </div>
+                    <button class="btn btn-red" onclick="solicitarConfirmacaoExclusao()">DELETAR SORTEIO SELECIONADO</button>
+                </div>
+
+                <div id="painel-confirmacao-excluir" class="confirmacao-box hidden">
+                    <p style="color: #fff; font-weight: bold; margin-bottom: 15px; font-size: 1.05rem;">
+                        ⚠️ Tem certeza absoluta que deseja excluir este sorteio? Todos os códigos e cotas dele serão apagados para sempre!
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-red" onclick="executarExclusaoSorteio()">SIM, EXCLUIR</button>
+                        <button class="btn btn-secondary" onclick="cancelarExclusaoSorteio()">NÃO, VOLTAR</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-gerar-codigo" class="tab-content hidden">
+                <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
+                <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Gerenciador de Códigos de Acesso</h3>
+                <div class="form-group">
+                    <label>Selecione o Sorteio</label>
+                    <select id="select-sorteios-cliente" onchange="mostrarLinkPadrao()"></select>
+                </div>
+                
+                <div style="margin-bottom: 15px; background: #0d0d0d; padding: 10px; border-radius: 6px; border: 1px solid #222;">
+                    <label style="margin-bottom: 2px;">🔗 Link Padrão do Sorteio (Envie para todos os clientes):</label>
+                    <div id="link-padrao-url" style="color: var(--purple); font-size: 0.85rem; word-break: break-all; font-weight: bold; user-select: all;"></div>
+                </div>
+
+                <button class="btn" onclick="gerarCodigoAutomaticoAdmin()">GERAR NOVO CÓDIGO (5 COTAS)</button>
+                
+                <div id="resultado-codigo" class="hidden" style="margin-top: 15px;">
+                    <p style="font-size: 0.85rem; color: var(--text-gray);">Código gerado com sucesso!</p>
+                    <div id="codigo-gerado-texto" class="link-gerado" style="font-size: 1.3rem; font-weight: bold; text-align: center; border-color: var(--green); margin-bottom: 10px;"></div>
+                    <button class="btn btn-secondary" id="btn-copiar" onclick="copiarCodigoClipboard()" style="padding: 10px; font-size: 0.85rem;">📋 COPIAR CÓDIGO</button>
+                </div>
+            </div>
+
+            <div id="tab-cotas-geradas" class="tab-content hidden">
+                <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
+                <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Histórico de Resgates por Código</h3>
+                <div class="form-group">
+                    <label>Selecione o Sorteio</label>
+                    <select id="select-sorteios-historico" onchange="carregarHistoricoCotas()"></select>
+                </div>
+                <div class="historico-lista" id="conteudo-historico"></div>
+            </div>
+
+            <div id="tab-sortear" class="tab-content hidden">
+                <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
+                <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Realizar Sorteio</h3>
+                
+                <div class="form-group">
+                    <label>Selecione o Sorteio</label>
+                    <select id="select-sorteios-realizar"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantidade de cotas a sortear</label>
+                    <input type="number" id="sorteio-quantidade-premios" value="1" min="1" placeholder="Ex: 1">
+                </div>
+
+                <button class="btn" onclick="realizarSorteioFinal()">SORTEAR AGORA</button>
+                
+                <div class="resultado-container">
+                    <h4 class="resultado-titulo">🏆 Resultados do Sorteio</h4>
+                    <div class="historico-lista" id="ganhadores-historico-lista">
+                        <p style="color:#444; font-style:italic; text-align: center; padding: 10px 0;">Nenhum sorteio executado nesta aba ainda.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-cliente" class="hidden">
+            <h2 id="cliente-sorteio-nome" style="color: var(--purple); margin-bottom: 5px; font-size: 1.4rem;"></h2>
+            <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">Insira seus dados e o código recebido para liberar suas cotas</p>
+            
+            <div id="cliente-form">
+                <div class="form-group">
+                    <label>Seu Nome Completo</label>
+                    <input type="text" id="cliente-nome">
+                </div>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="tel" id="cliente-fone" placeholder="(00) 00000-0000" maxlength="15" oninput="aplicarMascaraTelefone(this)">
+                </div>
+                <div class="form-group">
+                    <label>🔑 Código de Acesso Exclusivo</label>
+                    <input type="text" id="cliente-codigo" placeholder="Digite o código aqui..." style="border-color: var(--purple); text-transform: uppercase; font-weight: bold; letter-spacing: 1px;">
+                </div>
+                <button class="btn" onclick="validarEResgatarCotasCliente()">VALIDAR E LIBERAR COTAS</button>
+            </div>
+
+            <div id="cliente-resultado" class="tab-content hidden" style="text-align: center;"></div>
+
+            <div class="progress-container">
+                <span id="label-dias-restantes" style="font-size: 0.85rem; color: var(--green);">Calculando tempo restante...</span>
+                <div class="progress-bar-bg">
+                    <div id="cliente-progress-bar" class="progress-bar-fill"></div>
+                </div>
+            </div>
+
+            <div class="instagram-box">
+                ⚠️ <strong style="color: var(--purple);">Regra Obrigatória:</strong> Para receber o prêmio caso seja sorteado, você precisa estar seguindo nosso Instagram oficial.
+                <a href="https://www.instagram.com/onhype.fit" target="_blank" class="btn btn-purple" style="margin-top: 12px; margin-bottom: 0;">Seguir @onhype.fit</a>
+            </div>
+
+            <div class="ultimos-participantes">
+                <h4>🔥 Últimos resgates realizados</h4>
+                <ul id="lista-ultimos-usuarios">
+                    <li style="color: #444; font-style: italic;">Nenhum resgate feito ainda neste sorteio.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 🛠️ COLE AQUI AS SUAS CREDENCIAIS DO FIREBASE PEGAS NO PASSO 3
+        const firebaseConfig = {
+            apiKey: "AIzaSyBwHBoQgyyfcebWk9QudmoyCa4Ie1XJKzA",
+            authDomain: "on-hype-fit-sorteio.firebaseapp.com",
+            databaseURL: "https://on-hype-fit-sorteio-default-rtdb.firebaseio.com",
+            projectId: "on-hype-fit-sorteio",
+            storageBucket: "on-hype-fit-sorteio.firebasestorage.app",
+            messagingSenderId: "756347920541",
+            appId: "1:756347920541:web:7ecd3b676b2977d482f474",
+            measurementId: "G-0BQHDKVNLC"
+        };
+
+        // Inicializando o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let sorteiosGlobal = [];
+        let idSorteioClienteFixo = null;
+
+        // Função utilitária para buscar todos os dados do Firebase sincronizados
+        function sincronizarComFirebase(callback) {
+            database.ref('sorteios').once('value').then((snapshot) => {
+                const dados = snapshot.val();
+                if (dados) {
+                    // Transforma o objeto do Firebase de volta em Array estruturado
+                    sorteiosGlobal = Object.keys(dados).map(key => {
+                        let s = dados[key];
+                        if(!s.codigos) s.codigos = [];
+                        // Garante que os codigos internos também virem uma lista manejável
+                        if(!Array.isArray(s.codigos)) {
+                            s.codigos = Object.keys(s.codigos).map(k => s.codigos[k]);
+                        }
+                        return s;
+                    });
+                } else {
+                    sorteiosGlobal = [];
+                }
+                if(callback) callback();
+            });
+        }
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sorteioIdParam = urlParams.get('sorteioId');
+
+            sincronizarComFirebase(() => {
+                if (sorteioIdParam !== null) {
+                    idSorteioClienteFixo = sorteioIdParam;
+                    abrirTelaCliente(sorteioIdParam);
+                } else {
+                    if (sessionStorage.getItem('adminLogado') === 'true') {
+                        mostrarPainelAdmin();
+                    } else {
+                        mostrarTelaLogin();
+                    }
+                }
+            });
+        };
+
+        function aplicarMascaraTelefone(input) {
+            let valor = input.value;
+            valor = valor.replace(/\D/g, "");
+            if (valor.length > 0) {
+                valor = "(" + valor;
+            }
+            if (valor.length > 3) {
+                valor = valor.substring(0, 3) + ") " + valor.substring(3);
+            }
+            if (valor.length > 10) {
+                valor = valor.substring(0, 10) + "-" + valor.substring(10, 14);
+            }
+            input.value = valor;
+        }
+
+        function efetuarLogin() {
+            const u = document.getElementById('login-user').value;
+            const p = document.getElementById('login-pass').value;
+
+            if(u === 'admin' && p === '1234') {
+                sessionStorage.setItem('adminLogado', 'true');
+                mostrarPainelAdmin();
+            } else {
+                alert('Usuário ou senha incorretos!');
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLogado');
+            location.reload();
+        }
+
+        function mostrarTelaLogin() {
+            document.getElementById('view-login').classList.remove('hidden');
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('main-logo').classList.add('hidden');
+        }
+
+        function mostrarPainelAdmin() {
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-home').classList.remove('hidden');
+            document.getElementById('main-logo').classList.remove('hidden');
+            sincronizarComFirebase(() => {
+                atualizarSelects();
+                mostrarLinkPadrao();
+            });
+        }
+
+        function mudarAba(tabId) {
+            fecharAbas();
+            document.getElementById(tabId).classList.remove('hidden');
+            sincronizarComFirebase(() => {
+                if(tabId === 'tab-cotas-geradas') carregarHistoricoCotas();
+                if(tabId === 'tab-gerar-codigo') mostrarLinkPadrao();
+                if(tabId === 'tab-sortear') {
+                    document.getElementById('ganhadores-historico-lista').innerHTML = '<p style="color:#444; font-style:italic; text-align: center; padding: 10px 0;">Nenhum sorteio executado nesta aba ainda.</p>';
+                }
+            });
+        }
+
+        function fecharAbas() {
+            document.getElementById('tab-gerar-sorteio').classList.add('hidden');
+            document.getElementById('tab-excluir-sorteio').classList.add('hidden');
+            document.getElementById('tab-gerar-codigo').classList.add('hidden');
+            document.getElementById('tab-cotas-geradas').classList.add('hidden');
+            document.getElementById('tab-sortear').classList.add('hidden');
+            document.getElementById('resultado-codigo').classList.add('hidden');
+        }
+
+        function salvarSorteio() {
+            const nome = document.getElementById('sorteio-nome').value;
+            const qtdCotas = parseInt(document.getElementById('sorteio-qtd').value);
+            const data = document.getElementById('sorteio-data').value;
+
+            if(!nome || !qtdCotas || !data) return alert('Preencha todos os campos!');
+
+            const idGerado = Date.now().toString();
+            const novoSorteio = {
+                id: idGerado,
+                nome: nome,
+                maxCotas: qtdCotas,
+                data: data,
+                dataCriacao: new Date().toISOString().split('T')[0],
+                codigos: [] 
+            };
+
+            database.ref('sorteios/' + idGerado).set(novoSorteio).then(() => {
+                alert('Sorteio cadastrado com sucesso no Firebase!');
+                document.getElementById('sorteio-nome').value = '';
+                document.getElementById('sorteio-qtd').value = '';
+                document.getElementById('sorteio-data').value = '';
+                mostrarPainelAdmin();
+                fecharAbas();
+            });
+        }
+
+        function abrirSubAbaExcluir() {
+            fecharAbas();
+            document.getElementById('tab-excluir-sorteio').classList.remove('hidden');
+            cancelarExclusaoSorteio(); 
+        }
+
+        function solicitarConfirmacaoExclusao() {
+            const idSorteio = document.getElementById('select-sorteios-excluir').value;
+            if(!idSorteio) return alert('Nenhum sorteio selecionado para excluir!');
+            
+            document.getElementById('corpo-selecao-excluir').classList.add('hidden');
+            document.getElementById('painel-confirmacao-excluir').classList.remove('hidden');
+        }
+
+        function cancelarExclusaoSorteio() {
+            document.getElementById('corpo-selecao-excluir').classList.remove('hidden');
+            document.getElementById('painel-confirmacao-excluir').classList.add('hidden');
+        }
+
+        function ejecutarExclusaoSorteio() {
+            const idSorteio = document.getElementById('select-sorteios-excluir').value;
+            
+            database.ref('sorteios/' + idSorteio).remove().then(() => {
+                alert('Sorteio excluído permanentemente do Firebase!');
+                mostrarPainelAdmin();
+                mudarAba('tab-gerar-sorteio');
+            });
+        }
+
+        function atualizarSelects() {
+            const selCliente = document.getElementById('select-sorteios-cliente');
+            const selRealizar = document.getElementById('select-sorteios-realizar');
+            const selHistorico = document.getElementById('select-sorteios-historico');
+            const selExcluir = document.getElementById('select-sorteios-excluir');
+            
+            selCliente.innerHTML = '';
+            selRealizar.innerHTML = '';
+            selHistorico.innerHTML = '';
+            selExcluir.innerHTML = '';
+
+            sorteiosGlobal.forEach(s => {
+                let opt = `<option value="${s.id}">${s.nome} (${s.data})</option>`;
+                selCliente.innerHTML += opt;
+                selRealizar.innerHTML += opt;
+                selHistorico.innerHTML += opt;
+                selExcluir.innerHTML += opt;
+            });
+        }
+
+        function mostrarLinkPadrao() {
+            const idSorteio = document.getElementById('select-sorteios-cliente').value;
+            if(!idSorteio) return;
+            const urlBase = window.location.href.split('?')[0];
+            document.getElementById('link-padrao-url').innerText = `${urlBase}?sorteioId=${idSorteio}`;
+        }
+
+        function gerarCodigoAutomaticoAdmin() {
+            const idSorteio = document.getElementById('select-sorteios-cliente').value;
+            
+            sincronizarComFirebase(() => {
+                const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
+                if(!sorteio) return alert('Selecione ou crie um sorteio primeiro!');
+
+                let totalCotasMapeadas = 0;
+                sorteio.codigos.forEach(c => totalCotasMapeadas += c.cotas.length);
+
+                if(totalCotasMapeadas + 5 > sorteio.maxCotas) {
+                    return alert('Erro! Carga máxima de cotas atingida.');
+                }
+
+                const hashAleatorio = Math.random().toString(36).substring(2, 7).toUpperCase();
+                const codigoFormatado = `HYPE-${hashAleatorio}`;
+
+                let novasCotas = [];
+                while(novasCotas.length < 5) {
+                    let numAleatorio = Math.floor(Math.random() * sorteio.maxCotas) + 1;
+                    let numFormatado = String(numAleatorio).padStart(String(sorteio.maxCotas).length, '0');
+                    let cotaJaExiste = sorteio.codigos.some(c => c.cotas.includes(numFormatado));
+                    
+                    if(!novasCotas.includes(numFormatado) && !cotaJaExiste) {
+                        novasCotas.push(numFormatado);
+                    }
+                }
+
+                const novoItemCodigo = {
+                    codigo: codigoFormatado,
+                    cotas: novasCotas,
+                    resgatado: false,
+                    nome: '',
+                    fone: '',
+                    dataResgateMilli: 0 
+                };
+
+                sorteio.codigos.push(novoItemCodigo);
+
+                // Atualiza a árvore estruturada inteira do Sorteio no Firebase de forma sincronizada
+                database.ref('sorteios/' + idSorteio).set(sorteio).then(() => {
+                    document.getElementById('codigo-gerado-texto').innerText = codigoFormatado;
+                    const btnCopiar = document.getElementById('btn-copiar');
+                    btnCopiar.innerText = "📋 COPIAR CÓDIGO";
+                    btnCopiar.style.background = "#222";
+                    document.getElementById('resultado-codigo').classList.remove('hidden');
+                });
+            });
+        }
+
+        function copiarCodigoClipboard() {
+            const codigoTexto = document.getElementById('codigo-gerado-texto').innerText;
+            if(!codigoTexto) return;
+
+            navigator.clipboard.writeText(codigoTexto).then(() => {
+                const btnCopiar = document.getElementById('btn-copiar');
+                btnCopiar.innerText = "✅ COPIADO!";
+                btnCopiar.style.background = "var(--green)";
+            });
+        }
+
+        function carregarHistoricoCotas() {
+            const idSorteio = document.getElementById('select-sorteios-historico').value;
+            const container = document.getElementById('conteudo-historico');
+            container.innerHTML = '';
+
+            if(!idSorteio) return;
+
+            sincronizarComFirebase(() => {
+                const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
+                if(!sorteio) return;
+
+                const resgatados = sorteio.codigos.filter(c => c.resgatado === true);
+
+                if(resgatados.length === 0) {
+                    container.innerHTML = '<p style="color:#666; font-style:italic; padding: 10px 0;">Nenhum código resgatado ainda.</p>';
+                    return;
+                }
+
+                resgatados.forEach(item => {
+                    let badges = item.cotas.map(c => `<span class="cota-badge">${c}</span>`).join('');
+                    container.innerHTML += `
+                        <div class="historico-item">
+                            <p><strong>🔑 Código:</strong> <span style="color:var(--purple); font-weight:bold;">${item.codigo}</span></p>
+                            <p><strong>👤 Nome:</strong> ${item.nome}</p>
+                            <p><strong>📞 Contato:</strong> ${item.fone}</p>
+                            <div class="historico-cotas-badges">
+                                ${badges}
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        function realizarSorteioFinal() {
+            const idSorteio = document.getElementById('select-sorteios-realizar').value;
+            const qtdDesejada = parseInt(document.getElementById('sorteio-quantidade-premios').value);
+
+            sincronizarComFirebase(() => {
+                const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
+                if(!sorteio) return alert('Sorteio não encontrado.');
+                
+                let todasAsCotasValidas = [];
+                sorteio.codigos.forEach(c => {
+                    if(c.resgatado === true) {
+                        c.cotas.forEach(numeroCota => {
+                            todasAsCotasValidas.push({ numero: numeroCota, nome: c.nome, fone: c.fone, codigoOrigem: c.codigo });
+                        });
+                    }
+                });
+
+                if(todasAsCotasValidas.length === 0) return alert('Urna vazia.');
+                if(qtdDesejada > todasAsCotasValidas.length) return alert('Quantidade de cotas solicitada maior que o total disponível.');
+
+                const containerLista = document.getElementById('ganhadores-historico-lista');
+                containerLista.innerHTML = ''; 
+
+                let sorteadosDestaRodada = [];
+
+                for(let i = 0; i < qtdDesejada; i++) {
+                    let indiceSorteado;
+                    let itemCota;
+                    
+                    do {
+                        indiceSorteado = Math.floor(Math.random() * todasAsCotasValidas.length);
+                        itemCota = todasAsCotasValidas[indiceSorteado];
+                    } while(sorteadosDestaRodada.some(s => s.numero === itemCota.numero));
+
+                    sorteadosDestaRodada.push(itemCota);
+
+                    containerLista.innerHTML += `
+                        <div class="historico-item" style="border-left: 4px solid var(--green);">
+                            <div style="margin-bottom: 5px;">
+                                <span class="cota-badge cota-badge-sorteada">🔥 COTA: ${itemCota.numero}</span>
+                            </div>
+                            <p style="margin-top: 8px;"><strong>👤 Ganhador:</strong> ${itemCota.nome}</p>
+                            <p><strong>📞 Contato/WhatsApp:</strong> ${itemCota.fone}</p>
+                            <p style="font-size:0.75rem; color:#666;">Origem: Código ${itemCota.codigoOrigem}</p>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function abrirTelaCliente(idSorteio) {
+            document.getElementById('view-login').classList.add('hidden');
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('main-logo').classList.remove('hidden');
+            document.getElementById('view-cliente').classList.remove('hidden');
+
+            sincronizarComFirebase(() => {
+                const sorteioAtualCliente = sorteiosGlobal.find(s => s.id == idSorteio);
+                if(!sorteioAtualCliente) {
+                    document.getElementById('view-cliente').innerHTML = '<h2 style="color:var(--purple)">Sorteio não localizado.</h2>';
+                    return;
+                }
+
+                document.getElementById('cliente-sorteio-nome').innerText = sorteioAtualCliente.nome;
+                atualizarBarraProgresso(sorteioAtualCliente.dataCriacao, sorteioAtualCliente.data);
+                atualizarUltimosParticipantes();
+            });
+        }
+
+        function atualizarBarraProgresso(dataCriacaoStr, dataFinalStr) {
+            const hoje = new Date();
+            hoje.setHours(0,0,0,0);
+            const dataCriacao = new Date(dataCriacaoStr + 'T00:00:00');
+            const dataFinal = new Date(dataFinalStr + 'T00:00:00');
+            
+            const totalTempo = dataFinal - dataCriacao;
+            const tempoRestante = dataFinal - hoje;
+
+            const labelStatus = document.getElementById('label-dias-restantes');
+            const barra = document.getElementById('cliente-progress-bar');
+
+            if (tempoRestante < 0) {
+                if(labelStatus) labelStatus.innerText = "⏳ Inscrições encerradas!";
+                if(barra) barra.style.width = "100%";
+                return;
+            }
+
+            const diasRestantes = Math.ceil(tempoRestante / (1000 * 60 * 60 * 24));
+            if(labelStatus) labelStatus.innerText = `⏳ Restam apenas ${diasRestantes} dia(s) para o sorteio!`;
+
+            let porcentagem = 100 - Math.floor((tempoRestante / totalTempo) * 100);
+            if (porcentagem < 5) porcentagem = 5; 
+            if (porcentagem > 100) porcentagem = 100;
+
+            setTimeout(() => { if(barra) barra.style.width = porcentagem + "%"; }, 300);
+        }
+
+        function atualizarUltimosParticipantes() {
+            const listaContainer = document.getElementById('lista-ultimos-usuarios');
+            if(!listaContainer || !idSorteioClienteFixo) return;
+            
+            sincronizarComFirebase(() => {
+                const sorteioAlvo = sorteiosGlobal.find(s => s.id == idSorteioClienteFixo);
+                if(!sorteioAlvo) return;
+
+                listaContainer.innerHTML = '';
+                const resgatadosValidos = sorteioAlvo.codigos.filter(c => c.resgatado === true);
+                
+                const ordenadosPorData = [...resgatadosValidos].sort((a, b) => (b.dataResgateMilli || 0) - (a.dataResgateMilli || 0));
+                const ultimos5 = ordenadosPorData.slice(0, 5);
+
+                if(ultimos5.length === 0) {
+                    listaContainer.innerHTML = '<li style="color: #444; font-style: italic;">Nenhum resgate feito ainda.</li>';
+                    return;
+                }
+
+                ultimos5.forEach(p => {
+                    listaContainer.innerHTML += `<li>⚡ <span class="highlight-green">${p.nome}</span> aderiu suas cotas agora há pouco!</li>`;
+                });
+            });
+        }
+
+        // SALVAMENTO REMOTO E SEGURO NO FIREBASE REALTIME DATABASE
+        function validarEResgatarCotasCliente() {
+            sincronizarComFirebase(() => {
+                const sorteioAlvo = sorteiosGlobal.find(s => s.id == idSorteioClienteFixo);
+                if(!sorteioAlvo) return alert('Erro crítico: Sorteio base não localizado.');
+
+                const nome = document.getElementById('cliente-nome').value.trim();
+                const fone = document.getElementById('cliente-fone').value.trim();
+                const codigoDigitado = document.getElementById('cliente-codigo').value.trim().toUpperCase();
+
+                if(!nome || !fone || !codigoDigitado) return alert('Por favor, preencha todos os campos!');
+                if(fone.length < 14) return alert('Insira um telefone válido com DDD!');
+
+                const registroCodigo = sorteioAlvo.codigos.find(c => c.codigo === codigoDigitado);
+                const boxResultado = document.getElementById('cliente-resultado');
+
+                if(!registroCodigo) return alert('Código inválido ou inexistente!');
+
+                if(registroCodigo.resgatado === true) {
+                    document.getElementById('cliente-form').classList.add('hidden');
+                    boxResultado.innerHTML = `
+                        <h3 style="color: var(--purple); margin-bottom:10px;">Código Já Resgatado!</h3>
+                        <p style="color:var(--text-gray); font-size: 0.9rem;">Este código de acesso já foi validado.</p>
+                        <p style="margin-top:15px; font-weight:bold;">Suas 5 cotas são:</p>
+                        <div style="font-size: 1.6rem; color: var(--purple); letter-spacing: 4px; margin-top:10px; font-weight: bold; background: #000; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                            ${registroCodigo.cotas.join(' - ')}
+                        </div>
+                        <p style="font-size:0.75rem; color: #555; margin-bottom: 20px;">Dono do resgate: ${registroCodigo.nome}</p>
+                        <button class="btn btn-purple" onclick="voltarParaFormularioNovoCodigo()">NOVA COTAS</button>
+                    `;
+                    boxResultado.classList.remove('hidden');
+                    return;
+                }
+
+                // Modifica o objeto local sincronizado
+                registroCodigo.resgatado = true;
+                registroCodigo.nome = nome;
+                registroCodigo.fone = fone;
+                registroCodigo.dataResgateMilli = Date.now(); 
+
+                // Salva permanentemente a nova lista e as modificações estruturais no Firebase
+                database.ref('sorteios/' + idSorteioClienteFixo).set(sorteioAlvo).then(() => {
+                    atualizarUltimosParticipantes();
+                    document.getElementById('cliente-form').classList.add('hidden');
+                    boxResultado.innerHTML = `
+                        <h3 style="color: var(--green); margin-bottom:10px;">🎉 Código Ativado!</h3>
+                        <p style="color:var(--text-gray)">Suas 5 cotas foram vinculadas com sucesso no servidor e estão participando:</p>
+                        <div style="font-size: 1.6rem; color: var(--green); font-weight: bold; letter-spacing: 3px; margin: 20px 0; background: #0d0d0d; padding: 12px; border-radius: 6px; border: 1px dashed var(--green);">
+                            ${registroCodigo.cotas.join(' | ')}
+                        </div>
+                        <p style="font-size:0.8rem; color: var(--text-gray); margin-bottom: 20px;">Salvo com sucesso na nuvem!</p>
+                        <button class="btn" onclick="voltarParaFormularioNovoCodigo()">NOVA COTAS</button>
+                    `;
+                    boxResultado.classList.remove('hidden');
+                });
+            });
+        }
+
+        function voltarParaFormularioNovoCodigo() {
+            document.getElementById('cliente-resultado').classList.add('hidden');
+            document.getElementById('cliente-nome').value = '';
+            document.getElementById('cliente-fone').value = '';
+            document.getElementById('cliente-codigo').value = '';
+            document.getElementById('cliente-form').classList.remove('hidden');
+            document.getElementById('cliente-nome').focus();
+            atualizarUltimosParticipantes();
+        }
+    </script>
+</body>
+</html>
