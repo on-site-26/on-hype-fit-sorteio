@@ -685,7 +685,7 @@
             document.getElementById('painel-confirmacao-excluir').classList.add('hidden');
         }
 
-        function ejecutarExclusaoSorteio() {
+        function executarExclusaoSorteio() {
             const idSorteio = document.getElementById('select-sorteios-excluir').value;
             
             database.ref('sorteios/' + idSorteio).remove().then(() => {
