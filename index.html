@@ -375,7 +375,7 @@
                     <label>Data Realização</label>
                     <input type="date" id="sorteio-data">
                 </div>
-                <button class="btn" onclick="salvarSorteio()">Criar Sorteio</button>
+                <button class="btn" id="btn-criar-sorteio" onclick="salvarSorteio()">Criar Sorteio</button>
                 <button class="btn btn-red" onclick="abrirSubAbaExcluir()" style="margin-top: 15px;">❌ EXCLUIR SORTEIOS</button>
             </div>
 
@@ -527,15 +527,23 @@
                 if (dados) {
                     sorteiosGlobal = Object.keys(dados).map(key => {
                         let s = dados[key];
-                        if (!s.codigos) s.codigos = [];
-                        if (!Array.isArray(s.codigos)) {
+                        // Inicializa a lista de códigos se não existir ou se for uma string fictícia de controle do Firebase
+                        if (!s.codigos || typeof s.codigos === 'string') {
+                            s.codigos = [];
+                        } else if (!Array.isArray(s.codigos)) {
+                            // Converte em array caso esteja salvo como objeto com chaves numéricas
                             s.codigos = Object.keys(s.codigos).map(k => s.codigos[k]);
                         }
+                        // Filtra placeholders vazios que o Firebase cria
+                        s.codigos = s.codigos.filter(c => c && typeof c === 'object' && c.codigo);
                         return s;
                     });
                 } else {
                     sorteiosGlobal = [];
                 }
+                if (callback) callback();
+            }).catch(err => {
+                console.error("Erro ao ler dados do Firebase:", err);
                 if (callback) callback();
             });
         }
@@ -628,11 +636,20 @@
         }
 
         function salvarSorteio() {
-            const nome = document.getElementById('sorteio-nome').value;
-            const qtdCotas = parseInt(document.getElementById('sorteio-qtd').value);
-            const data = document.getElementById('sorteio-data').value;
+            const nomeInput = document.getElementById('sorteio-nome');
+            const qtdCotasInput = document.getElementById('sorteio-qtd');
+            const dataInput = document.getElementById('sorteio-data');
+            const btnSalvar = document.getElementById('btn-criar-sorteio');
+
+            const nome = nomeInput.value.trim();
+            const qtdCotas = parseInt(qtdCotasInput.value);
+            const data = dataInput.value;
 
             if (!nome || !qtdCotas || !data) return alert('Preencha todos os campos!');
+
+            // Desabilita o botão para evitar cliques duplicados durante o envio
+            btnSalvar.innerText = "Criando...";
+            btnSalvar.disabled = true;
 
             const idGerado = Date.now().toString();
             const novoSorteio = {
@@ -641,16 +658,25 @@
                 maxCotas: qtdCotas,
                 data: data,
                 dataCriacao: new Date().toISOString().split('T')[0],
-                codigos: [] 
+                codigos: "sem_codigos" // Evita o erro de array vazio no Firebase
             };
 
             database.ref('sorteios/' + idGerado).set(novoSorteio).then(() => {
                 alert('Sorteio cadastrado com sucesso!');
-                document.getElementById('sorteio-nome').value = '';
-                document.getElementById('sorteio-qtd').value = '';
-                document.getElementById('sorteio-data').value = '';
+                nomeInput.value = '';
+                qtdCotasInput.value = '';
+                dataInput.value = '';
+                
+                btnSalvar.innerText = "Criar Sorteio";
+                btnSalvar.disabled = false;
+                
                 mostrarPainelAdmin();
                 fecharAbas();
+            }).catch(err => {
+                console.error("Erro ao criar sorteio:", err);
+                alert("Houve um erro ao tentar salvar o sorteio no banco de dados.");
+                btnSalvar.innerText = "Criar Sorteio";
+                btnSalvar.disabled = false;
             });
         }
 
@@ -673,7 +699,7 @@
             document.getElementById('painel-confirmacao-excluir').classList.add('hidden');
         }
 
-        function executarExclusaoSorteio() {
+        function ejecutarExclusaoSorteio() {
             const idSorteio = document.getElementById('select-sorteios-excluir').value;
             database.ref('sorteios/' + idSorteio).remove().then(() => {
                 alert('Sorteio excluído permanentemente!');
