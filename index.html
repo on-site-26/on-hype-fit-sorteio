@@ -9,9 +9,9 @@
             --dark-bg: #0a0a0a;       
             --card-bg: #141414;       
             --green: #00E576;         
-            --green-hover: #00E576;
+            --green-hover: #00CC66;
             --purple: #6030CF;        
-            --purple-hover: #6030CF;
+            --purple-hover: #4F25A8;
             --red: #e74c3c;
             --red-hover: #c0392b;
             --text: #ffffff;          
@@ -27,58 +27,54 @@
         }
 
         body {
-    background-color: var(--dark-bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Mudado de center para flex-start para jogar tudo para cima */
-    min-height: 100vh;
-    padding: 10px 10px;      /* Um espaçamento confortável no topo e nas laterais */
-            
+            background-color: var(--dark-bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 10px 10px;      
         }
 
         .container {
-    width: 90%;
-    max-width: 650px;
-    background: var(--card-bg);
-    border: 1px solid #222;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-    text-align: center;
-    transition: all 0.3s ease;
-
-    /* ESTAS DUAS LINHAS ABAIXO CORRIGEM O PROBLEMA DO COMPUTADOR */
-    display: flex;
-    flex-direction: column; 
+            width: 90%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column; 
         }
 
         @media (min-width: 480px) {
             .container { padding: 30px; }
         }
         
-      .logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin: 10px auto 10px auto; /* Reduzido o espaço para subir o conteúdo */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 10px auto 10px auto;
+        }
 
-}
+        .logo-img {
+            display: block;
+            width: 100%;
+            max-width: 160px;        
+            height: auto;            
+            margin: 0 auto;          
+        }
 
-.logo-img {
-    display: block;
-    width: 100%;
-    max-width: 160px;        /* Tamanho ideal para celular de acordo com a foto */
-    height: auto;            /* Mantém a proporção perfeita */
-    margin: 0 auto;          /* Força o alinhamento no centro */
-}
-
-@media (min-width: 480px) {
-    .logo-img {
-        max-width: 220px;    /* Tamanho para computadores */
-    }
-}
+        @media (min-width: 480px) {
+            .logo-img {
+                max-width: 220px;    
+            }
+        }
 
         .hidden { display: none !important; }
 
@@ -326,15 +322,18 @@
         }
     </style>
 
+    <!-- Importações Firebase SDK Compat -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 </head>
 <body>
 
+    <div class="container">
+        <!-- 1. TELA DE LOGIN -->
         <div id="view-login">
-    <div class="logo-container">
-        <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
-    </div>
+            <div class="logo-container">
+                <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
+            </div>
             <h3 style="margin-bottom: 20px; color: var(--text-gray); font-size: 1.1rem;">Painel Administrativo</h3>
             <div class="form-group">
                 <label>Usuário</label>
@@ -345,14 +344,13 @@
                 <input type="password" id="login-pass" value="">
             </div>
             <button class="btn" onclick="efetuarLogin()">Entrar</button>
-            <p style="font-size: 0.8rem; color: #444; margin-top: 5px;">Dica: ......</p>
         </div>
 
+        <!-- 2. PAINEL ADMIN -->
         <div id="view-home" class="hidden">
-
-    <div class="logo-container">
-        <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
-    </div>
+            <div class="logo-container">
+                <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
+            </div>
             <div class="nav-buttons">
                 <button class="btn btn-purple" onclick="mudarAba('tab-gerar-sorteio')">GERAR UM SORTEIO</button>
                 <button class="btn btn-purple" onclick="mudarAba('tab-gerar-codigo')">GERAR CÓDIGO PARA CLIENTE</button>
@@ -361,6 +359,7 @@
                 <button class="btn btn-secondary" onclick="logout()" style="margin-top: 15px;">Sair do Sistema</button>
             </div>
 
+            <!-- TAB: GERAR SORTEIO -->
             <div id="tab-gerar-sorteio" class="tab-content hidden">
                 <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
                 <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Novo Sorteio</h3>
@@ -377,14 +376,13 @@
                     <input type="date" id="sorteio-data">
                 </div>
                 <button class="btn" onclick="salvarSorteio()">Criar Sorteio</button>
-                
                 <button class="btn btn-red" onclick="abrirSubAbaExcluir()" style="margin-top: 15px;">❌ EXCLUIR SORTEIOS</button>
             </div>
 
+            <!-- TAB: EXCLUIR SORTEIO -->
             <div id="tab-excluir-sorteio" class="tab-content hidden">
                 <button class="back-btn" onclick="mudarAba('tab-gerar-sorteio')">← Voltar para Novo Sorteio</button>
                 <h3 style="color: var(--red); margin-bottom: 15px; font-size: 1.2rem;">Excluir um Sorteio</h3>
-                
                 <div id="corpo-selecao-excluir">
                     <div class="form-group">
                         <label>Selecione o sorteio que deseja remover permanentemente</label>
@@ -392,7 +390,6 @@
                     </div>
                     <button class="btn btn-red" onclick="solicitarConfirmacaoExclusao()">DELETAR SORTEIO SELECIONADO</button>
                 </div>
-
                 <div id="painel-confirmacao-excluir" class="confirmacao-box hidden">
                     <p style="color: #fff; font-weight: bold; margin-bottom: 15px; font-size: 1.05rem;">
                         ⚠️ Tem certeza absoluta que deseja excluir este sorteio? Todos os códigos e cotas dele serão apagados para sempre!
@@ -404,6 +401,7 @@
                 </div>
             </div>
 
+            <!-- TAB: GERAR CÓDIGO -->
             <div id="tab-gerar-codigo" class="tab-content hidden">
                 <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
                 <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Gerenciador de Códigos de Acesso</h3>
@@ -411,14 +409,11 @@
                     <label>Selecione o Sorteio</label>
                     <select id="select-sorteios-cliente" onchange="mostrarLinkPadrao()"></select>
                 </div>
-                
                 <div style="margin-bottom: 15px; background: #0d0d0d; padding: 10px; border-radius: 6px; border: 1px solid #222;">
                     <label style="margin-bottom: 2px;">🔗 Link Padrão do Sorteio (Envie para todos os clientes):</label>
                     <div id="link-padrao-url" style="color: var(--purple); font-size: 0.85rem; word-break: break-all; font-weight: bold; user-select: all;"></div>
                 </div>
-
                 <button class="btn" onclick="gerarCodigoAutomaticoAdmin()">GERAR NOVO CÓDIGO (5 COTAS)</button>
-                
                 <div id="resultado-codigo" class="hidden" style="margin-top: 15px;">
                     <p style="font-size: 0.85rem; color: var(--text-gray);">Código gerado com sucesso!</p>
                     <div id="codigo-gerado-texto" class="link-gerado" style="font-size: 1.3rem; font-weight: bold; text-align: center; border-color: var(--green); margin-bottom: 10px;"></div>
@@ -426,6 +421,7 @@
                 </div>
             </div>
 
+            <!-- TAB: HISTÓRICO COTAS -->
             <div id="tab-cotas-geradas" class="tab-content hidden">
                 <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
                 <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Histórico de Resgates por Código</h3>
@@ -436,22 +432,19 @@
                 <div class="historico-lista" id="conteudo-historico"></div>
             </div>
 
+            <!-- TAB: REALIZAR SORTEIO -->
             <div id="tab-sortear" class="tab-content hidden">
                 <button class="back-btn" onclick="fecharAbas()">← Voltar</button>
                 <h3 style="color: var(--purple); margin-bottom: 15px; font-size: 1.2rem;">Realizar Sorteio</h3>
-                
                 <div class="form-group">
                     <label>Selecione o Sorteio</label>
                     <select id="select-sorteios-realizar"></select>
                 </div>
-
                 <div class="form-group">
                     <label>Quantidade de cotas a sortear</label>
                     <input type="number" id="sorteio-quantidade-premios" value="1" min="1" placeholder="Ex: 1">
                 </div>
-
                 <button class="btn" onclick="realizarSorteioFinal()">SORTEAR AGORA</button>
-                
                 <div class="resultado-container">
                     <h4 class="resultado-titulo">🏆 Resultados do Sorteio</h4>
                     <div class="historico-lista" id="ganhadores-historico-lista">
@@ -462,16 +455,12 @@
         </div>
 
         <!-- 3. TELA DO CLIENTE -->
-   <div id="view-cliente" class="hidden">
-       
-       <!-- LOGO CENTRALIZADA NO TOPO (ADICIONE AQUI) -->
-       <div class="logo-container">
-           <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
-       </div>
-
-       <h2 id="cliente-sorteio-nome" style="color: var(--purple); margin-bottom: 5px; font-size: 1.4rem;"></h2>
-       <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">Insira seus dados e o código recebido para liberar suas cotas</p>
-            
+        <div id="view-cliente" class="hidden">
+            <div class="logo-container">
+                <img src="LOGO ON HYPE FIT.png" alt="Logo ON HYPE FIT" class="logo-img">
+            </div>
+            <h2 id="cliente-sorteio-nome" style="color: var(--purple); margin-bottom: 5px; font-size: 1.4rem;"></h2>
+            <p style="color: var(--text-gray); margin-bottom: 20px; font-size: 0.9rem;">Insira seus dados e o código recebido para liberar suas cotas</p>
             <div id="cliente-form">
                 <div class="form-group">
                     <label>Seu Nome Completo</label>
@@ -509,11 +498,10 @@
                 </ul>
             </div>
         </div>
-
     </div>
 
     <script>
-        // 🛠️ COLE AQUI AS SUAS CREDENCIAIS DO FIREBASE PEGAS NO PASSO 3
+        // Configurações do Firebase Realtime Database
         const firebaseConfig = {
             apiKey: "AIzaSyBwHBoQgyyfcebWk9QudmoyCa4Ie1XJKzA",
             authDomain: "on-hype-fit-sorteio.firebaseapp.com",
@@ -532,17 +520,15 @@
         let sorteiosGlobal = [];
         let idSorteioClienteFixo = null;
 
-        // Função utilitária para buscar todos os dados do Firebase sincronizados
+        // Sincroniza os dados locais com o Firebase de forma assíncrona
         function sincronizarComFirebase(callback) {
             database.ref('sorteios').once('value').then((snapshot) => {
                 const dados = snapshot.val();
                 if (dados) {
-                    // Transforma o objeto do Firebase de volta em Array estruturado
                     sorteiosGlobal = Object.keys(dados).map(key => {
                         let s = dados[key];
-                        if(!s.codigos) s.codigos = [];
-                        // Garante que os codigos internos também virem uma lista manejável
-                        if(!Array.isArray(s.codigos)) {
+                        if (!s.codigos) s.codigos = [];
+                        if (!Array.isArray(s.codigos)) {
                             s.codigos = Object.keys(s.codigos).map(k => s.codigos[k]);
                         }
                         return s;
@@ -550,7 +536,7 @@
                 } else {
                     sorteiosGlobal = [];
                 }
-                if(callback) callback();
+                if (callback) callback();
             });
         }
 
@@ -582,7 +568,7 @@
                 valor = valor.substring(0, 3) + ") " + valor.substring(3);
             }
             if (valor.length > 10) {
-                valor = valor.substring(0, 10) + "-" + valor.substring(10, 14);
+                valor = valor.substring(0, 10) + "-" + valor.substring(10, 15);
             }
             input.value = valor;
         }
@@ -591,7 +577,7 @@
             const u = document.getElementById('login-user').value;
             const p = document.getElementById('login-pass').value;
 
-            if(u === 'Claudio' && p === '123cg') {
+            if (u === 'Claudio' && p === '123cg') {
                 sessionStorage.setItem('adminLogado', 'true');
                 mostrarPainelAdmin();
             } else {
@@ -607,11 +593,13 @@
         function mostrarTelaLogin() {
             document.getElementById('view-login').classList.remove('hidden');
             document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-cliente').classList.add('hidden');
         }
 
         function mostrarPainelAdmin() {
             document.getElementById('view-login').classList.add('hidden');
             document.getElementById('view-home').classList.remove('hidden');
+            document.getElementById('view-cliente').classList.add('hidden');
             sincronizarComFirebase(() => {
                 atualizarSelects();
                 mostrarLinkPadrao();
@@ -622,9 +610,9 @@
             fecharAbas();
             document.getElementById(tabId).classList.remove('hidden');
             sincronizarComFirebase(() => {
-                if(tabId === 'tab-cotas-geradas') carregarHistoricoCotas();
-                if(tabId === 'tab-gerar-codigo') mostrarLinkPadrao();
-                if(tabId === 'tab-sortear') {
+                if (tabId === 'tab-cotas-geradas') carregarHistoricoCotas();
+                if (tabId === 'tab-gerar-codigo') mostrarLinkPadrao();
+                if (tabId === 'tab-sortear') {
                     document.getElementById('ganhadores-historico-lista').innerHTML = '<p style="color:#444; font-style:italic; text-align: center; padding: 10px 0;">Nenhum sorteio executado nesta aba ainda.</p>';
                 }
             });
@@ -644,7 +632,7 @@
             const qtdCotas = parseInt(document.getElementById('sorteio-qtd').value);
             const data = document.getElementById('sorteio-data').value;
 
-            if(!nome || !qtdCotas || !data) return alert('Preencha todos os campos!');
+            if (!nome || !qtdCotas || !data) return alert('Preencha todos os campos!');
 
             const idGerado = Date.now().toString();
             const novoSorteio = {
@@ -657,7 +645,7 @@
             };
 
             database.ref('sorteios/' + idGerado).set(novoSorteio).then(() => {
-                alert('Sorteio cadastrado com sucesso no Firebase!');
+                alert('Sorteio cadastrado com sucesso!');
                 document.getElementById('sorteio-nome').value = '';
                 document.getElementById('sorteio-qtd').value = '';
                 document.getElementById('sorteio-data').value = '';
@@ -674,7 +662,7 @@
 
         function solicitarConfirmacaoExclusao() {
             const idSorteio = document.getElementById('select-sorteios-excluir').value;
-            if(!idSorteio) return alert('Nenhum sorteio selecionado para excluir!');
+            if (!idSorteio) return alert('Nenhum sorteio selecionado para excluir!');
             
             document.getElementById('corpo-selecao-excluir').classList.add('hidden');
             document.getElementById('painel-confirmacao-excluir').classList.remove('hidden');
@@ -687,9 +675,8 @@
 
         function executarExclusaoSorteio() {
             const idSorteio = document.getElementById('select-sorteios-excluir').value;
-            
             database.ref('sorteios/' + idSorteio).remove().then(() => {
-                alert('Sorteio excluído permanentemente do Firebase!');
+                alert('Sorteio excluído permanentemente!');
                 mostrarPainelAdmin();
                 mudarAba('tab-gerar-sorteio');
             });
@@ -717,7 +704,7 @@
 
         function mostrarLinkPadrao() {
             const idSorteio = document.getElementById('select-sorteios-cliente').value;
-            if(!idSorteio) return;
+            if (!idSorteio) return;
             const urlBase = window.location.href.split('?')[0];
             document.getElementById('link-padrao-url').innerText = `${urlBase}?sorteioId=${idSorteio}`;
         }
@@ -727,12 +714,12 @@
             
             sincronizarComFirebase(() => {
                 const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
-                if(!sorteio) return alert('Selecione ou crie um sorteio primeiro!');
+                if (!sorteio) return alert('Selecione ou crie um sorteio primeiro!');
 
                 let totalCotasMapeadas = 0;
                 sorteio.codigos.forEach(c => totalCotasMapeadas += c.cotas.length);
 
-                if(totalCotasMapeadas + 5 > sorteio.maxCotas) {
+                if (totalCotasMapeadas + 5 > sorteio.maxCotas) {
                     return alert('Erro! Carga máxima de cotas atingida.');
                 }
 
@@ -740,12 +727,12 @@
                 const codigoFormatado = `HYPE-${hashAleatorio}`;
 
                 let novasCotas = [];
-                while(novasCotas.length < 5) {
+                while (novasCotas.length < 5) {
                     let numAleatorio = Math.floor(Math.random() * sorteio.maxCotas) + 1;
                     let numFormatado = String(numAleatorio).padStart(String(sorteio.maxCotas).length, '0');
                     let cotaJaExiste = sorteio.codigos.some(c => c.cotas.includes(numFormatado));
                     
-                    if(!novasCotas.includes(numFormatado) && !cotaJaExiste) {
+                    if (!novasCotas.includes(numFormatado) && !cotaJaExiste) {
                         novasCotas.push(numFormatado);
                     }
                 }
@@ -761,7 +748,6 @@
 
                 sorteio.codigos.push(novoItemCodigo);
 
-                // Atualiza a árvore estruturada inteira do Sorteio no Firebase de forma sincronizada
                 database.ref('sorteios/' + idSorteio).set(sorteio).then(() => {
                     document.getElementById('codigo-gerado-texto').innerText = codigoFormatado;
                     const btnCopiar = document.getElementById('btn-copiar');
@@ -774,7 +760,7 @@
 
         function copiarCodigoClipboard() {
             const codigoTexto = document.getElementById('codigo-gerado-texto').innerText;
-            if(!codigoTexto) return;
+            if (!codigoTexto) return;
 
             navigator.clipboard.writeText(codigoTexto).then(() => {
                 const btnCopiar = document.getElementById('btn-copiar');
@@ -788,15 +774,15 @@
             const container = document.getElementById('conteudo-historico');
             container.innerHTML = '';
 
-            if(!idSorteio) return;
+            if (!idSorteio) return;
 
             sincronizarComFirebase(() => {
                 const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
-                if(!sorteio) return;
+                if (!sorteio) return;
 
                 const resgatados = sorteio.codigos.filter(c => c.resgatado === true);
 
-                if(resgatados.length === 0) {
+                if (resgatados.length === 0) {
                     container.innerHTML = '<p style="color:#666; font-style:italic; padding: 10px 0;">Nenhum código resgatado ainda.</p>';
                     return;
                 }
@@ -821,6 +807,9 @@
             const idSorteio = document.getElementById('select-sorteios-realizar').value;
             const qtdDesejada = parseInt(document.getElementById('sorteio-quantidade-premios').value);
 
+            if (!idSorteio) return alert('Selecione um sorteio válido!');
+            if (isNaN(qtdDesejada) || qtdDesejada < 1) return alert('Insira uma quantidade de prêmios válida!');
+
             sincronizarComFirebase(() => {
                 const sorteio = sorteiosGlobal.find(s => s.id == idSorteio);
                 if(!sorteio) return alert('Sorteio não encontrado.');
@@ -834,27 +823,23 @@
                     }
                 });
 
-                if(todasAsCotasValidas.length === 0) return alert('Urna vazia.');
-                if(qtdDesejada > todasAsCotasValidas.length) return alert('Quantidade de cotas solicitada maior que o total disponível.');
+                if(todasAsCotasValidas.length === 0) return alert('Urna vazia. Nenhuma cota foi resgatada ainda.');
+                if(qtdDesejada > todasAsCotasValidas.length) return alert('Quantidade de cotas solicitada maior que o total disponível na urna.');
 
                 const containerLista = document.getElementById('ganhadores-historico-lista');
                 containerLista.innerHTML = ''; 
 
                 let sorteadosDestaRodada = [];
+                let poolTemporario = [...todasAsCotasValidas];
 
                 for(let i = 0; i < qtdDesejada; i++) {
-                    let indiceSorteado;
-                    let itemCota;
+                    let indiceSorteado = Math.floor(Math.random() * poolTemporario.length);
+                    let itemCota = poolTemporario.splice(indiceSorteado, 1)[0];
                     
-                    do {
-                        indiceSorteado = Math.floor(Math.random() * todasAsCotasValidas.length);
-                        itemCota = todasAsCotasValidas[indiceSorteado];
-                    } while(sorteadosDestaRodada.some(s => s.numero === itemCota.numero));
-
                     sorteadosDestaRodada.push(itemCota);
 
                     containerLista.innerHTML += `
-                        <div class="historico-item" style="border-left: 4px solid var(--green);">
+                        <div class="historico-item" style="border-left: 4px solid var(--green); background: rgba(0,229,118,0.05);">
                             <div style="margin-bottom: 5px;">
                                 <span class="cota-badge cota-badge-sorteada">🔥 COTA: ${itemCota.numero}</span>
                             </div>
@@ -875,7 +860,7 @@
             sincronizarComFirebase(() => {
                 const sorteioAtualCliente = sorteiosGlobal.find(s => s.id == idSorteio);
                 if(!sorteioAtualCliente) {
-                    document.getElementById('view-cliente').innerHTML = '<h2 style="color:var(--purple)">Sorteio não localizado.</h2>';
+                    document.getElementById('view-cliente').innerHTML = '<h2 style="color:var(--purple); text-align:center; margin-top:40px;">Sorteio não localizado.</h2>';
                     return;
                 }
 
@@ -928,33 +913,37 @@
                 const ultimos5 = ordenadosPorData.slice(0, 5);
 
                 if(ultimos5.length === 0) {
-                    listaContainer.innerHTML = '<li style="color: #444; font-style: italic;">Nenhum resgate feito ainda.</li>';
+                    listaContainer.innerHTML = '<li style="color: #444; font-style: italic;">Nenhum resgate feito ainda neste sorteio.</li>';
                     return;
                 }
 
                 ultimos5.forEach(p => {
-                    listaContainer.innerHTML += `<li>⚡ <span class="highlight-green">${p.nome}</span> aderiu suas cotas agora há pouco!</li>`;
+                    let nomeExibicao = p.nome.split(' ')[0];
+                    let foneExibicao = p.fone.length >= 14 ? " (final " + p.fone.slice(-4) + ")" : "";
+                    listaContainer.innerHTML += `<li>⚡ <span class="highlight-green">${nomeExibicao}${foneExibicao}</span> liberou suas cotas agora há pouco!</li>`;
                 });
             });
         }
 
         // SALVAMENTO REMOTO E SEGURO NO FIREBASE REALTIME DATABASE
         function validarEResgatarCotasCliente() {
+            const nome = document.getElementById('cliente-nome').value.trim();
+            const fone = document.getElementById('cliente-fone').value.trim();
+            const codigoDigitado = document.getElementById('cliente-codigo').value.trim().toUpperCase();
+
+            if(!nome || !fone || !codigoDigitado) return alert('Por favor, preencha todos os campos!');
+            if(fone.length < 14) return alert('Insira um telefone válido com DDD!');
+
             sincronizarComFirebase(() => {
                 const sorteioAlvo = sorteiosGlobal.find(s => s.id == idSorteioClienteFixo);
                 if(!sorteioAlvo) return alert('Erro crítico: Sorteio base não localizado.');
 
-                const nome = document.getElementById('cliente-nome').value.trim();
-                const fone = document.getElementById('cliente-fone').value.trim();
-                const codigoDigitado = document.getElementById('cliente-codigo').value.trim().toUpperCase();
-
-                if(!nome || !fone || !codigoDigitado) return alert('Por favor, preencha todos os campos!');
-                if(fone.length < 14) return alert('Insira um telefone válido com DDD!');
-
-                const registroCodigo = sorteioAlvo.codigos.find(c => c.codigo === codigoDigitado);
+                const indexCodigo = sorteioAlvo.codigos.findIndex(c => c.codigo === codigoDigitado);
                 const boxResultado = document.getElementById('cliente-resultado');
 
-                if(!registroCodigo) return alert('Código inválido ou inexistente!');
+                if(indexCodigo === -1) return alert('Código inválido ou inexistente!');
+
+                const registroCodigo = sorteioAlvo.codigos[indexCodigo];
 
                 if(registroCodigo.resgatado === true) {
                     document.getElementById('cliente-form').classList.add('hidden');
@@ -978,8 +967,8 @@
                 registroCodigo.fone = fone;
                 registroCodigo.dataResgateMilli = Date.now(); 
 
-                // Salva permanentemente a nova lista e as modificações estruturais no Firebase
-                database.ref('sorteios/' + idSorteioClienteFixo).set(sorteioAlvo).then(() => {
+                // Salva permanentemente a modificação no nó específico do código no Firebase
+                database.ref(`sorteios/${idSorteioClienteFixo}/codigos/${indexCodigo}`).set(registroCodigo).then(() => {
                     atualizarUltimosParticipantes();
                     document.getElementById('cliente-form').classList.add('hidden');
                     boxResultado.innerHTML = `
@@ -992,6 +981,9 @@
                         <button class="btn" onclick="voltarParaFormularioNovoCodigo()">NOVA COTAS</button>
                     `;
                     boxResultado.classList.remove('hidden');
+                }).catch(err => {
+                    console.error("Erro ao salvar resgate no Firebase: ", err);
+                    alert("Ocorreu um erro de rede. Tente salvar novamente.");
                 });
             });
         }
